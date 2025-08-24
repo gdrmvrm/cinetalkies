@@ -1,17 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Search from './Components/search';
 
-const API_BASE_URL = 'https://api.themoviedb.org/3';
-
-const API_KEY = import.meta.env.VITE_TMDB_API_KEY;
-
-const API_OPTIONS = {
-  method: 'GET',
-  headers: {
-    accept: 'application/json',
-    Authorization: `Bearer ${API_KEY}`
-  }
-};
+import { API_BASE_URL, API_OPTIONS } from '../config';
 
 const App = () => {
   const [errorMsg, setErrorMsg] = useState(null);
@@ -21,7 +11,7 @@ const App = () => {
     const url = `${API_BASE_URL}/discover/movie?sort_by=popularity.desc`;
     try {
       const response = await fetch(url, API_OPTIONS);
-      if (response.ok) {
+      if (!response.ok) {
         throw new Error('Error fetching movies. Please try again.');
       }
 
