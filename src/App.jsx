@@ -1,4 +1,5 @@
 import React from 'react';
+import Search from './Components/search';
 
 const App = () => {
   return (
@@ -9,12 +10,12 @@ const App = () => {
           Cine<span className="text-red-700">Talkies</span>
         </h1>
       </header>
-
       <section className="flex flex-col items-center justify-center">
         <img src="./hero.png" alt="hero banner" className="w-90 sm:w-200 md:w-[480px] mb-10" />
-        <h1 className="text-2xl sm:text-3xl font-mono text-center">
+        <h1 className="text-2xl sm:text-3xl font-mono text-center mb-8">
           Smart Picks. <span className="text-red-700"> Zero Fuss.</span>
         </h1>
+        <Search />
       </section>
     </main>
   );
