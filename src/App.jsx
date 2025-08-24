@@ -1,7 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Search from './Components/search';
 
 const App = () => {
+  const [searchTerm, setSearchTerm] = useState('');
+
   return (
     <main>
       <header className="flex flex-row items-center w-full justify-center mt-5 mb-5">
@@ -15,7 +17,7 @@ const App = () => {
         <h1 className="text-2xl sm:text-3xl font-mono text-center mb-8">
           Smart Picks. <span className="text-red-700"> Zero Fuss.</span>
         </h1>
-        <Search />
+        <Search searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
       </section>
     </main>
   );
