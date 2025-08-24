@@ -1,8 +1,40 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Search from './Components/search';
 
+const API_BASE_URL = 'https://api.themoviedb.org/3';
+
+const API_KEY = import.meta.env.VITE_TMDB_API_KEY;
+
+const API_OPTIONS = {
+  method: 'GET',
+  headers: {
+    accept: 'application/json',
+    Authorization: `Bearer ${API_KEY}`
+  }
+};
+
 const App = () => {
+  const [errorMsg, setErrorMsg] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
+
+  const fetchMovies = async () => {
+    const url = `${API_BASE_URL}/discover/movie?sort_by=popularity.desc`;
+    try {
+      const response = await fetch(url, API_OPTIONS);
+      if (response.ok) {
+        throw new Error('Error fetching movies. Please try again.');
+      }
+
+      const result = await response.json();
+      console.log(result);
+    } catch (error) {
+      setErrorMsg(`${error.message}`);
+    }
+  };
+
+  useEffect(() => {
+    fetchMovies();
+  }, []);
 
   return (
     <main>
@@ -19,6 +51,8 @@ const App = () => {
         </h1>
         <Search searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
       </section>
+
+      {errorMsg && <p className="text-sm text-red-700 text-center pt-1">*{errorMsg}</p>}
     </main>
   );
 };
