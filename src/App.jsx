@@ -6,19 +6,36 @@ import { API_BASE_URL, API_OPTIONS } from '../config';
 const App = () => {
   const [errorMsg, setErrorMsg] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
+  const [movies, setMovies] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   const fetchMovies = async () => {
     const url = `${API_BASE_URL}/discover/movie?sort_by=popularity.desc`;
+
+    setIsLoading(true);
+    setErrorMsg('');
+
     try {
       const response = await fetch(url, API_OPTIONS);
       if (!response.ok) {
         throw new Error('Error fetching movies. Please try again.');
       }
 
-      const result = await response.json();
-      console.log(result);
+      const data = await response.json();
+
+      //technically you only need this if the API returns a JSON body with a Response field. 
+      //the TMDB api doesn't return a Response key. Hence this won't be trigged.  
+      //But keeping it for reference sake.
+      if (data.Response === 'False') {
+        setErrorMsg(data.Error ?? 'Failed to fetch movies');
+        setMovies([]);
+        return;
+      }
+      setMovies(data.results ?? []);
     } catch (error) {
       setErrorMsg(`${error.message}`);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -34,6 +51,7 @@ const App = () => {
           Cine<span className="text-red-700">Talkies</span>
         </h1>
       </header>
+
       <section className="flex flex-col items-center justify-center">
         <img src="./hero.png" alt="hero banner" className="w-90 sm:w-200 md:w-[480px] mb-10" />
         <h1 className="text-2xl sm:text-3xl font-mono text-center mb-8">
@@ -42,7 +60,20 @@ const App = () => {
         <Search searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
       </section>
 
-      {errorMsg && <p className="text-sm text-red-700 text-center pt-1">*{errorMsg}</p>}
+      <section>
+        <h2>All Movies</h2>
+        {isLoading ? (
+          <p className="text-red-500">Loading...</p>
+        ) : errorMsg ? (
+          <p className="text-red-500">{errorMsg}</p>
+        ) : (
+          <ul>
+            {movies.map((movie) => (
+              <p key={movie.id}>{movie.title}</p>
+            ))}
+          </ul>
+        )}
+      </section>
     </main>
   );
 };
